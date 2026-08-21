@@ -22,5 +22,9 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  /* background-image:
+    radial-gradient(circle at 15% 0%, rgba(201, 162, 39, 0.08), transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(161, 59, 82, 0.08), transparent 45%);
+  min-height: 100vh; */
   font-family: Arial, Helvetica, sans-serif;
 }
