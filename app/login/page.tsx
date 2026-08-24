@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Lock, Mail, AlertTriangle, Loader2 } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,24 +13,28 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: { preventDefault: () => void }) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
+    try {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-    setLoading(false);
+      if (authError) {
+        setError("Correo o contraseña incorrectos.");
+        setLoading(false);
+        return;
+      }
 
-    if (authError) {
-      setError("Correo o contraseña incorrectos.");
-      return;
+      router.push("/votar");
+    } catch {
+      setError("Ocurrió un error inesperado. Intente de nuevo.");
+      setLoading(false);
     }
-
-    router.push("/votar");
   };
 
   useEffect(() => {
@@ -41,79 +46,123 @@ export default function Login() {
   }, [router]);
 
   return (
-    <main className="md:min-h-screen flex items-center justify-center py-4 px-4 md:px-8">
-      <div className="w-full max-w-5xl bg-white [box-shadow:0_2px_10px_-3px_rgba(14,14,14,0.3)] rounded-2xl overflow-hidden">
-        <div className="grid items-center w-full gap-4 md:grid-cols-2">
-          <div className="md:aspect-8/10 bg-gray-50 relative before:absolute before:inset-0 before:bg-black/10 overflow-hidden w-full h-full">
+    <main className="min-h-screen w-full flex items-center justify-center px-4 py-8 relative overflow-hidden bg-zinc-950">
+      {/* Decorative ambient light */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-5xl glass-panel rounded-2xl shadow-2xl shadow-black/80 overflow-hidden relative z-10">
+        <div className="grid md:grid-cols-2 items-stretch min-h-[500px]">
+          {/* Image/Cover Column */}
+          <div className="relative w-full min-h-[250px] md:min-h-full bg-zinc-900">
             <Image
               src="/invitacion.jpeg"
-              className="w-full h-full object-cover"
-              alt="login image"
-              width={1230}
-              height={700}
+              className="absolute inset-0 w-full h-full object-cover opacity-85 brightness-[0.75] contrast-[1.05]"
+              alt="Gala Event Invitation"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent md:bg-gradient-to-r md:from-transparent md:to-zinc-950/90" />
+            
+            {/* Overlay badge/text inside the image */}
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 z-20">
+              <span className="bg-amber-500/20 border border-amber-500/40 text-amber-400 text-[10px] font-bold tracking-[0.2em] uppercase px-2.5 py-1 rounded-full backdrop-blur-md">
+                Edición Especial
+              </span>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-3 drop-shadow-md">
+                Gala de Elección
+              </h2>
+              <p className="text-zinc-300 text-xs md:text-sm mt-1.5 font-light max-w-md drop-shadow-sm">
+                Un encuentro de elegancia, talento y tradición. Tu voto decide la corona.
+              </p>
+            </div>
           </div>
 
-          <div className="py-6 px-6 lg:px-8 max-md:-order-1">
+          {/* Form Column */}
+          <div className="p-8 md:p-12 flex flex-col justify-center bg-zinc-950/40">
             <div className="max-w-md mx-auto w-full">
-              <p className="text-blue-900 text-md font-bold text-center uppercase m-2 pb-8">
-                Panel de jurado
-              </p>
-              <h1 className="text-blue-800 text-3xl font-bold text-center">
-                Votación Miss & Mister
-              </h1>
-              <p className="text-center mb-8 text-blue-900">
-                Ingresá con las credenciales que te compartieron
-              </p>
+              <div className="mb-8">
+                <span className="text-[10px] font-bold tracking-[0.25em] text-amber-500 uppercase block mb-1">
+                  Panel de Jurados
+                </span>
+                <h1 className="text-3xl font-bold tracking-tight text-white">
+                  Ingreso al Sistema
+                </h1>
+                <p className="text-sm text-zinc-400 mt-2">
+                  Por favor, ingresá las credenciales asignadas para iniciar la votación.
+                </p>
+              </div>
 
-              <form className="space-y-6" onSubmit={handleLogin}>
+              <form className="space-y-5" onSubmit={handleLogin}>
                 {error && (
-                  <div className="bg-red-100 py-2 px-4 my-4 rounded-md text-sm flex items-center w-full">
-                    <p className="text-red-800">{error}</p>
+                  <div className="bg-red-500/10 border border-red-500/20 py-3 px-4 rounded-lg text-sm flex items-center gap-3 text-red-400 animate-fadeIn">
+                    <AlertTriangle size={18} className="shrink-0" />
+                    <p className="font-medium">{error}</p>
                   </div>
                 )}
+
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-2 text-slate-900 font-medium text-sm inline-block"
+                    className="block mb-2 text-xs font-bold uppercase tracking-wider text-zinc-300"
                   >
-                    CORREO ELECTRONICO
+                    Correo Electrónico
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jurado@gmail.com"
-                    required
-                    className="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600"
-                  />
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                      <Mail size={16} />
+                    </span>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="jurado@evento.com"
+                      required
+                      className="pl-10 pr-4 py-3 text-sm text-white rounded-lg bg-zinc-900/60 border border-zinc-800 w-full focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all placeholder:text-zinc-600"
+                    />
+                  </div>
                 </div>
-                <div className="relative">
+
+                <div>
                   <label
                     htmlFor="password"
-                    className="mb-2 text-slate-900 font-medium text-sm inline-block"
+                    className="block mb-2 text-xs font-bold uppercase tracking-wider text-zinc-300"
                   >
-                    CONTRASEÑA
+                    Contraseña
                   </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    required
-                    className="px-3 py-2.5 text-sm text-slate-900 rounded-md bg-white w-full outline-1 -outline-offset-1 outline-slate-300 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600"
-                  />
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                      <Lock size={16} />
+                    </span>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      className="pl-10 pr-4 py-3 text-sm text-white rounded-lg bg-zinc-900/60 border border-zinc-800 w-full focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all placeholder:text-zinc-600"
+                    />
+                  </div>
                 </div>
+
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer text-white border border-blue-600 bg-blue-800 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="w-full mt-6 py-3.5 px-4 text-sm rounded-lg font-bold text-zinc-950 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {loading ? "Ingresando..." : "Ingresar"}
+                  {loading ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      <span>Ingresando...</span>
+                    </>
+                  ) : (
+                    <span>Iniciar Sesión</span>
+                  )}
                 </button>
               </form>
             </div>
