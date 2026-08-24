@@ -17,15 +17,15 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
+    const email2 = `${email.trim()}@votos.local`;
     try {
       const { error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: email2,
         password,
       });
 
       if (authError) {
-        setError("Correo o contraseña incorrectos.");
+        setError("Nombre de usuario o contraseña incorrectos.");
         setLoading(false);
         return;
       }
@@ -64,7 +64,7 @@ export default function Login() {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent md:bg-gradient-to-r md:from-transparent md:to-zinc-950/90" />
-            
+
             {/* Overlay badge/text inside the image */}
             <div className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 z-20">
               <span className="bg-amber-500/20 border border-amber-500/40 text-amber-400 text-[10px] font-bold tracking-[0.2em] uppercase px-2.5 py-1 rounded-full backdrop-blur-md">
@@ -74,7 +74,8 @@ export default function Login() {
                 Gala de Elección
               </h2>
               <p className="text-zinc-300 text-xs md:text-sm mt-1.5 font-light max-w-md drop-shadow-sm">
-                Un encuentro de elegancia, talento y tradición. Tu voto decide la corona.
+                Un encuentro de elegancia, talento y tradición. Tu voto decide
+                la corona.
               </p>
             </div>
           </div>
@@ -90,7 +91,8 @@ export default function Login() {
                   Ingreso al Sistema
                 </h1>
                 <p className="text-sm text-zinc-400 mt-2">
-                  Por favor, ingresá las credenciales asignadas para iniciar la votación.
+                  Por favor, ingresá las credenciales asignadas para iniciar la
+                  votación.
                 </p>
               </div>
 
@@ -107,19 +109,20 @@ export default function Login() {
                     htmlFor="email"
                     className="block mb-2 text-xs font-bold uppercase tracking-wider text-zinc-300"
                   >
-                    Correo Electrónico
+                    Nombre de usuario
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
                       <Mail size={16} />
                     </span>
                     <input
-                      type="email"
                       id="email"
                       name="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="jurado@evento.com"
+                      onChange={(e) =>
+                        setEmail(e.target.value.replace(/\s/g, ""))
+                      }
+                      placeholder="juradoUno"
                       required
                       className="pl-10 pr-4 py-3 text-sm text-white rounded-lg bg-zinc-900/60 border border-zinc-800 w-full focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all placeholder:text-zinc-600"
                     />
