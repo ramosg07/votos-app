@@ -1,7 +1,19 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import { Menu, X, Trophy, Star, Sparkles, AlertCircle, Crown, Medal, Award, ListOrdered, ChevronLeft } from "lucide-react";
+import {
+  Menu,
+  X,
+  Trophy,
+  Star,
+  Sparkles,
+  AlertCircle,
+  Crown,
+  Medal,
+  Award,
+  ListOrdered,
+  ChevronLeft,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -25,27 +37,35 @@ export default function ResultadosPage() {
 
   useEffect(() => {
     const init = async () => {
+      const { data } = await supabase.auth.getSession();
+      console.log("ENTROOOOO", { data });
+
+      if (!data.session) {
+        router.replace("/login");
+        return;
+      }
+      console.log("ENTROOOOO");
       setLoading(true);
       setError("");
-
       try {
         // Fetch contestants and results in parallel (unauthenticated view results check)
-        const [{ data: rawConcursantes, error: errC }, { data: rawResultados, error: errR }] =
-          await Promise.all([
-            supabase
-              .from("concursantes")
-              .select("*")
-              .eq("activo", true)
-              .eq("categoria", seleccionado)
-              .order("numero"),
-            supabase
-              .from("resultados")
-              .select("*")
-              .eq("categoria", seleccionado),
-          ]);
+        const [
+          { data: rawConcursantes, error: errC },
+          { data: rawResultados, error: errR },
+        ] = await Promise.all([
+          supabase
+            .from("concursantes")
+            .select("*")
+            .eq("activo", true)
+            .eq("categoria", seleccionado)
+            .order("numero"),
+          supabase.from("resultados").select("*").eq("categoria", seleccionado),
+        ]);
 
         if (errC || errR) {
-          throw new Error(errC?.message || errR?.message || "Error al obtener datos");
+          throw new Error(
+            errC?.message || errR?.message || "Error al obtener datos",
+          );
         }
 
         // Map contestants with their respective average scores
@@ -58,19 +78,23 @@ export default function ResultadosPage() {
         });
 
         // Sort by average score descending (highest score first)
-        const sortedConcursantes = mappedConcursantes.sort((a, b) => b.puntaje - a.puntaje);
+        const sortedConcursantes = mappedConcursantes.sort(
+          (a, b) => b.puntaje - a.puntaje,
+        );
 
         setConcursantes(sortedConcursantes);
       } catch (err: any) {
         console.error("Results load error:", err);
-        setError("Hubo un problema al cargar los resultados. Por favor reintenta.");
+        setError(
+          "Hubo un problema al cargar los resultados. Por favor reintenta.",
+        );
       } finally {
         setLoading(false);
       }
     };
 
     init();
-  }, [seleccionado]);
+  }, [seleccionado, router]);
 
   // Extract Podium positions
   const primerLugar = concursantes[0];
@@ -179,7 +203,6 @@ export default function ResultadosPage() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 w-full flex-1">
-        
         {/* Error message */}
         {error && (
           <div className="mb-8 max-w-2xl bg-red-500/10 border border-red-500/20 py-4 px-5 rounded-xl text-sm flex items-start gap-3.5 text-red-400">
@@ -187,7 +210,7 @@ export default function ResultadosPage() {
             <div>
               <p className="font-semibold">Error de carga</p>
               <p className="text-xs text-red-400/80 mt-1">{error}</p>
-              <button 
+              <button
                 onClick={() => setSeleccionado(seleccionado)}
                 className="mt-3 text-xs bg-red-500/20 hover:bg-red-500/30 text-white font-bold px-3 py-1.5 rounded-md transition-all cursor-pointer"
               >
@@ -250,35 +273,52 @@ export default function ResultadosPage() {
               <h3 className="text-xs font-extrabold tracking-[0.2em] uppercase text-zinc-500 text-center mb-10">
                 Podio de Honor
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                 {/* 2ND PLACE CARD */}
                 {segundoLugar && (
                   <div className="glass-panel border border-zinc-900/60 hover:border-zinc-800 rounded-2xl p-5 text-center flex flex-col items-center gap-3 relative order-2 md:order-1 shadow-lg group">
                     <div className="absolute top-4 left-4 bg-zinc-900 border border-zinc-800 rounded-full px-2 py-1 flex items-center gap-1">
                       <Medal className="text-slate-400" size={12} />
-                      <span className="text-[10px] font-black text-slate-400">2° Lugar</span>
+                      <span className="text-[10px] font-black text-slate-400">
+                        2° Lugar
+                      </span>
                     </div>
 
                     <div className="w-20 h-20 rounded-full overflow-hidden relative bg-zinc-900 border-2 border-slate-500 shadow-lg shadow-black/50 mt-4">
                       <Image
-                        src={segundoLugar.foto_url || segundoLugar.imagen_url || "/invitacion.jpeg"}
+                        src={
+                          segundoLugar.foto_url ||
+                          segundoLugar.imagen_url ||
+                          "/invitacion.jpeg"
+                        }
                         alt={segundoLugar.nombre}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="80px"
                       />
                     </div>
-                    
+
                     <div className="mt-2">
-                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">Candidato N° {segundoLugar.numero}</p>
-                      <h4 className="text-white font-bold text-md mt-0.5 line-clamp-1">{segundoLugar.nombre}</h4>
+                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
+                        Candidato N° {segundoLugar.numero}
+                      </p>
+                      <h4 className="text-white font-bold text-md mt-0.5 line-clamp-1">
+                        {segundoLugar.nombre}
+                      </h4>
                     </div>
 
                     <div className="w-full bg-zinc-950/60 border border-zinc-900 py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 mt-2">
-                      <Star className="text-slate-400 fill-slate-400 shrink-0" size={14} />
-                      <span className="text-lg font-black tracking-tight text-white">{segundoLugar.puntaje.toFixed(2)}</span>
-                      <span className="text-[10px] text-zinc-500 font-bold">pts</span>
+                      <Star
+                        className="text-slate-400 fill-slate-400 shrink-0"
+                        size={14}
+                      />
+                      <span className="text-lg font-black tracking-tight text-white">
+                        {segundoLugar.puntaje.toFixed(2)}
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-bold">
+                        pts
+                      </span>
                     </div>
                   </div>
                 )}
@@ -287,29 +327,49 @@ export default function ResultadosPage() {
                 {primerLugar && (
                   <div className="glass-panel border border-amber-500/20 hover:border-amber-500/40 rounded-2xl p-6 text-center flex flex-col items-center gap-3 relative order-1 md:order-2 shadow-xl shadow-amber-500/5 group min-h-[300px] bg-gradient-to-b from-amber-500/5 to-zinc-950/40">
                     <div className="absolute top-4 bg-amber-500/10 border border-amber-500/30 rounded-full px-3 py-1 flex items-center gap-1">
-                      <Crown className="text-amber-500 animate-bounce" size={14} />
-                      <span className="text-xs font-black text-amber-400 tracking-wider">GANADOR</span>
+                      <Crown
+                        className="text-amber-500 animate-bounce"
+                        size={14}
+                      />
+                      <span className="text-xs font-black text-amber-400 tracking-wider">
+                        GANADOR
+                      </span>
                     </div>
 
                     <div className="w-28 h-28 rounded-full overflow-hidden relative bg-zinc-900 border-4 border-amber-500 shadow-2xl shadow-amber-500/10 mt-6 relative">
                       <Image
-                        src={primerLugar.foto_url || primerLugar.imagen_url || "/invitacion.jpeg"}
+                        src={
+                          primerLugar.foto_url ||
+                          primerLugar.imagen_url ||
+                          "/invitacion.jpeg"
+                        }
                         alt={primerLugar.nombre}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="110px"
                       />
                     </div>
-                    
+
                     <div className="mt-2">
-                      <p className="text-amber-500 text-[10px] font-extrabold uppercase tracking-widest">Candidato N° {primerLugar.numero}</p>
-                      <h4 className="text-white font-black text-xl mt-0.5 line-clamp-1">{primerLugar.nombre}</h4>
+                      <p className="text-amber-500 text-[10px] font-extrabold uppercase tracking-widest">
+                        Candidato N° {primerLugar.numero}
+                      </p>
+                      <h4 className="text-white font-black text-xl mt-0.5 line-clamp-1">
+                        {primerLugar.nombre}
+                      </h4>
                     </div>
 
                     <div className="w-full bg-amber-500/10 border border-amber-500/20 py-3 px-5 rounded-xl flex items-center justify-center gap-1.5 mt-2">
-                      <Star className="text-amber-500 fill-amber-500 shrink-0" size={16} />
-                      <span className="text-2xl font-black tracking-tight text-amber-400">{primerLugar.puntaje.toFixed(2)}</span>
-                      <span className="text-xs text-amber-500 font-bold">pts</span>
+                      <Star
+                        className="text-amber-500 fill-amber-500 shrink-0"
+                        size={16}
+                      />
+                      <span className="text-2xl font-black tracking-tight text-amber-400">
+                        {primerLugar.puntaje.toFixed(2)}
+                      </span>
+                      <span className="text-xs text-amber-500 font-bold">
+                        pts
+                      </span>
                     </div>
                   </div>
                 )}
@@ -319,28 +379,45 @@ export default function ResultadosPage() {
                   <div className="glass-panel border border-zinc-900/60 hover:border-zinc-800 rounded-2xl p-5 text-center flex flex-col items-center gap-3 relative order-3 shadow-lg group">
                     <div className="absolute top-4 left-4 bg-zinc-900 border border-zinc-800 rounded-full px-2 py-1 flex items-center gap-1">
                       <Award className="text-amber-700" size={12} />
-                      <span className="text-[10px] font-black text-amber-700">3° Lugar</span>
+                      <span className="text-[10px] font-black text-amber-700">
+                        3° Lugar
+                      </span>
                     </div>
 
                     <div className="w-20 h-20 rounded-full overflow-hidden relative bg-zinc-900 border-2 border-amber-700 shadow-lg shadow-black/50 mt-4">
                       <Image
-                        src={tercerLugar.foto_url || tercerLugar.imagen_url || "/invitacion.jpeg"}
+                        src={
+                          tercerLugar.foto_url ||
+                          tercerLugar.imagen_url ||
+                          "/invitacion.jpeg"
+                        }
                         alt={tercerLugar.nombre}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="80px"
                       />
                     </div>
-                    
+
                     <div className="mt-2">
-                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">Candidato N° {tercerLugar.numero}</p>
-                      <h4 className="text-white font-bold text-md mt-0.5 line-clamp-1">{tercerLugar.nombre}</h4>
+                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-wider">
+                        Candidato N° {tercerLugar.numero}
+                      </p>
+                      <h4 className="text-white font-bold text-md mt-0.5 line-clamp-1">
+                        {tercerLugar.nombre}
+                      </h4>
                     </div>
 
                     <div className="w-full bg-zinc-950/60 border border-zinc-900 py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 mt-2">
-                      <Star className="text-amber-700 fill-amber-700 shrink-0" size={14} />
-                      <span className="text-lg font-black tracking-tight text-white">{tercerLugar.puntaje.toFixed(2)}</span>
-                      <span className="text-[10px] text-zinc-500 font-bold">pts</span>
+                      <Star
+                        className="text-amber-700 fill-amber-700 shrink-0"
+                        size={14}
+                      />
+                      <span className="text-lg font-black tracking-tight text-white">
+                        {tercerLugar.puntaje.toFixed(2)}
+                      </span>
+                      <span className="text-[10px] text-zinc-500 font-bold">
+                        pts
+                      </span>
                     </div>
                   </div>
                 )}
@@ -351,7 +428,9 @@ export default function ResultadosPage() {
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-2 border-b border-zinc-900 pb-4 mb-6">
                 <ListOrdered className="text-amber-500" size={20} />
-                <h3 className="text-lg font-bold text-white tracking-tight">Tabla General de Calificaciones</h3>
+                <h3 className="text-lg font-bold text-white tracking-tight">
+                  Tabla General de Calificaciones
+                </h3>
               </div>
 
               <div className="space-y-2">
@@ -361,10 +440,10 @@ export default function ResultadosPage() {
                     pos === 1
                       ? "text-amber-500 fill-amber-500"
                       : pos === 2
-                      ? "text-slate-400 fill-slate-400"
-                      : pos === 3
-                      ? "text-amber-700 fill-amber-700"
-                      : "text-zinc-600 fill-zinc-600";
+                        ? "text-slate-400 fill-slate-400"
+                        : pos === 3
+                          ? "text-amber-700 fill-amber-700"
+                          : "text-zinc-600 fill-zinc-600";
 
                   const positionBadge =
                     pos === 1 ? (
@@ -414,7 +493,9 @@ export default function ResultadosPage() {
                           <span className="text-base font-black text-white">
                             {concursante.puntaje.toFixed(2)}
                           </span>
-                          <span className="text-[10px] text-zinc-500 font-bold">pts</span>
+                          <span className="text-[10px] text-zinc-500 font-bold">
+                            pts
+                          </span>
                         </div>
                       </div>
 
@@ -425,7 +506,11 @@ export default function ResultadosPage() {
                           {/* Photo */}
                           <div className="w-10 h-10 rounded-full overflow-hidden relative bg-zinc-900 shrink-0 border border-zinc-800">
                             <Image
-                              src={concursante.foto_url || concursante.imagen_url || "/invitacion.jpeg"}
+                              src={
+                                concursante.foto_url ||
+                                concursante.imagen_url ||
+                                "/invitacion.jpeg"
+                              }
                               alt={concursante.nombre}
                               fill
                               className="object-cover"
@@ -448,7 +533,9 @@ export default function ResultadosPage() {
                           <span className="text-sm font-extrabold text-white">
                             {concursante.puntaje.toFixed(2)}
                           </span>
-                          <span className="text-[9px] text-zinc-500 font-bold">pts</span>
+                          <span className="text-[9px] text-zinc-500 font-bold">
+                            pts
+                          </span>
                         </div>
                       </div>
                     </div>
