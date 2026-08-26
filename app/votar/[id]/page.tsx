@@ -34,32 +34,15 @@ export default function VotarPage() {
         }
         setUser(sessionData.session.user);
 
-        // Fetch candidate details, criteria, and previous votes
-        const [
-          { data: dataConcursante, error: errC },
-          { data: dataCriterios, error: errCr },
-          { data: dataVotos, error: errV },
-        ] = await Promise.all([
-          supabase
-            .from("concursantes")
-            .select("*")
-            .eq("activo", true)
-            .eq("id", id)
-            .maybeSingle(),
-          supabase
-            .from("criterios")
-            .select("*")
-            .order("orden"),
-          supabase
-            .from("votos")
-            .select("*")
-            .eq("juez_id", sessionData.session.user.id)
-            .eq("concursante_id", id),
-        ]);
+        // 1️⃣ Primero cargar el concursante para conocer su categoría
+        const { data: dataConcursante, error: errC } = await supabase
+          .from("concursantes")
+          .select("*")
+          .eq("activo", true)
+          .eq("id", id)
+          .maybeSingle();
 
-        if (errC || errCr || errV) {
-          throw new Error(errC?.message || errCr?.message || errV?.message || "Error al cargar datos");
-        }
+        if (errC) throw new Error(errC.message);
 
         if (!dataConcursante) {
           setErrorMessage("El concursante no existe o no está activo.");
@@ -68,9 +51,32 @@ export default function VotarPage() {
         }
 
         setConcursante(dataConcursante);
+
+        // 2️⃣ Con la categoría del concursante, traer sus criterios + los votos existentes en paralelo
+        const [
+          { data: dataCriterios, error: errCr },
+          { data: dataVotos, error: errV },
+        ] = await Promise.all([
+          supabase
+            .from("criterios")
+            .select("*")
+            // criterios propios de la categoría O criterios globales (categoria IS NULL)
+            .or(`categoria.eq.${dataConcursante.categoria},categoria.is.null`)
+            .order("orden"),
+          supabase
+            .from("votos")
+            .select("*")
+            .eq("juez_id", sessionData.session.user.id)
+            .eq("concursante_id", id),
+        ]);
+
+        if (errCr || errV) {
+          throw new Error(errCr?.message || errV?.message || "Error al cargar criterios/votos");
+        }
+
         setCriterios(dataCriterios || []);
 
-        // Load existing scores, default to 5.0 for missing ones
+        // Cargar puntajes previos, por defecto 5.0
         const initialScores: Record<string, number> = {};
         (dataCriterios || []).forEach((crit: any) => {
           const matchingVote = (dataVotos || []).find((v: any) => v.criterio_id === crit.id);

@@ -2,9 +2,8 @@
 -- ESQUEMA: Votación Miss & Mister
 -- Ejecutar en Supabase -> SQL Editor
 -- ============================================================
-
--- Extensión para generar UUIDs (ya viene habilitada en Supabase normalmente)
-create extension if not exists "pgcrypto";
+-- Nota: pgcrypto ya viene habilitada por defecto en Supabase,
+-- no es necesario crearla manualmente.
 
 -- ------------------------------------------------------------
 -- 1. CONCURSANTES
@@ -12,7 +11,7 @@ create extension if not exists "pgcrypto";
 create table if not exists concursantes (
   id uuid primary key default gen_random_uuid(),
   nombre text not null,
-  categoria text not null check (categoria in ('miss','mister')),
+  categoria text not null check (categoria in ('miss','mister','cholita','nusta','chasqui')),
   numero int,
   foto_url text,
   activo boolean default true,
@@ -26,7 +25,11 @@ create table if not exists criterios (
   id uuid primary key default gen_random_uuid(),
   nombre text not null,
   peso numeric default 1,
-  orden int default 0
+  orden int default 0,
+  -- NULL significa que el criterio aplica a TODAS las categorías
+  categoria text default null check (
+    categoria is null or categoria in ('miss','mister','cholita','nusta','chasqui')
+  )
 );
 
 -- ------------------------------------------------------------
@@ -115,11 +118,44 @@ order by c.categoria, promedio desc nulls last;
 -- 6. DATOS DE EJEMPLO (borrá o editá a gusto)
 -- ------------------------------------------------------------
 
-insert into criterios (nombre, orden) values
-  ('Presentación / Porte', 1),
-  ('Talento', 2),
-  ('Entrevista', 3),
-  ('Simpatía', 4)
+-- Criterios para MISS
+insert into criterios (nombre, orden, categoria) values
+  ('Pasarela', 1, 'miss'),
+  ('Presentación / Porte', 2, 'miss'),
+  ('Entrevista', 3, 'miss'),
+  ('Simpatía', 4, 'miss')
+on conflict do nothing;
+
+-- Criterios para MISTER
+insert into criterios (nombre, orden, categoria) values
+  ('Pasarela', 1, 'mister'),
+  ('Presentación / Porte', 2, 'mister'),
+  ('Entrevista', 3, 'mister'),
+  ('Simpatía', 4, 'mister')
+on conflict do nothing;
+
+-- Criterios para ÑUSTA
+insert into criterios (nombre, orden, categoria) values
+  ('Baile Tradicional', 1, 'nusta'),
+  ('Vestimenta Típica', 2, 'nusta'),
+  ('Entrevista', 3, 'nusta'),
+  ('Simpatía', 4, 'nusta')
+on conflict do nothing;
+
+-- Criterios para CHOLITA
+insert into criterios (nombre, orden, categoria) values
+  ('Vestimenta Típica', 1, 'cholita'),
+  ('Baile', 2, 'cholita'),
+  ('Entrevista', 3, 'cholita'),
+  ('Simpatía', 4, 'cholita')
+on conflict do nothing;
+
+-- Criterios para CHASQUI
+insert into criterios (nombre, orden, categoria) values
+  ('Presentación / Porte', 1, 'chasqui'),
+  ('Baile', 2, 'chasqui'),
+  ('Entrevista', 3, 'chasqui'),
+  ('Simpatía', 4, 'chasqui')
 on conflict do nothing;
 
 insert into concursantes (nombre, categoria, numero) values
