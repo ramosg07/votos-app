@@ -38,13 +38,17 @@ export default function ResultadosPage() {
   useEffect(() => {
     const init = async () => {
       const { data } = await supabase.auth.getSession();
-      console.log("ENTROOOOO", { data });
 
       if (!data.session) {
         router.replace("/login");
         return;
       }
-      console.log("ENTROOOOO");
+
+      if (data.session.user.email !== "administrador@votos.local") {
+        router.replace("/login");
+        return;
+      }
+
       setLoading(true);
       setError("");
       try {

@@ -120,51 +120,170 @@ order by c.categoria, promedio desc nulls last;
 
 -- Criterios para MISS
 insert into criterios (nombre, orden, categoria) values
-  ('Pasarela', 1, 'miss'),
-  ('Presentación / Porte', 2, 'miss'),
-  ('Entrevista', 3, 'miss'),
-  ('Simpatía', 4, 'miss')
+  ('Simpatia', 1, 'miss'),
+  ('Belleza / presencia', 2, 'miss'),
+  ('Carisma', 3, 'miss'),
+  ('Desenvolmiento en pasarela', 4, 'miss'),
+  ('Vestuario', 5, 'miss'),
+  ('Conocimiento General', 6, 'miss'),
+  ('Puntualidad', 7, 'miss')
 on conflict do nothing;
 
 -- Criterios para MISTER
 insert into criterios (nombre, orden, categoria) values
-  ('Pasarela', 1, 'mister'),
-  ('Presentación / Porte', 2, 'mister'),
-  ('Entrevista', 3, 'mister'),
-  ('Simpatía', 4, 'mister')
+  ('Simpatia', 1, 'mister'),
+  ('Belleza / presencia', 2, 'mister'),
+  ('Carisma', 3, 'mister'),
+  ('Desenvolmiento en pasarela', 4, 'mister'),
+  ('Vestuario', 5, 'mister'),
+  ('Conocimiento General', 6, 'mister'),
+  ('Puntualidad', 7, 'mister')
 on conflict do nothing;
 
 -- Criterios para ÑUSTA
 insert into criterios (nombre, orden, categoria) values
-  ('Baile Tradicional', 1, 'nusta'),
-  ('Vestimenta Típica', 2, 'nusta'),
-  ('Entrevista', 3, 'nusta'),
-  ('Simpatía', 4, 'nusta')
+  ('Belleza / presencia', 1, 'nusta'),
+  ('Vestuario', 2, 'nusta'),
+  ('Coreografia / danza', 3, 'nusta'),
+  ('Originalidad', 4, 'nusta'),
+  ('Conocimientos Generales', 5, 'nusta'),
+  ('Puntualidad', 6, 'nusta')
 on conflict do nothing;
 
 -- Criterios para CHOLITA
 insert into criterios (nombre, orden, categoria) values
-  ('Vestimenta Típica', 1, 'cholita'),
-  ('Baile', 2, 'cholita'),
-  ('Entrevista', 3, 'cholita'),
-  ('Simpatía', 4, 'cholita')
+  ('Simpatia', 1, 'cholita'),
+  ('Belleza / presencia', 2, 'cholita'),
+  ('Carisma', 3, 'cholita'),
+  ('Desenvolmiento en pasarela', 4, 'cholita'),
+  ('Vestuario', 5, 'cholita'),
+  ('Conocimiento General', 6, 'cholita'),
+  ('Puntualidad', 7, 'cholita')
 on conflict do nothing;
 
 -- Criterios para CHASQUI
 insert into criterios (nombre, orden, categoria) values
-  ('Presentación / Porte', 1, 'chasqui'),
-  ('Baile', 2, 'chasqui'),
-  ('Entrevista', 3, 'chasqui'),
-  ('Simpatía', 4, 'chasqui')
+  ('Presencia y desenvolmiento', 1, 'chasqui'),
+  ('Vestuario e identidad cultural', 2, 'chasqui'),
+  ('Carisma', 3, 'chasqui'),
+  ('Originalidad', 4, 'chasqui'),
+  ('Conocimientos generales', 5, 'chasqui'),
+  ('Puntualidad', 5, 'chasqui')
 on conflict do nothing;
 
 insert into concursantes (nombre, categoria, numero) values
-  ('Concursante Miss 1', 'miss', 1),
-  ('Concursante Miss 2', 'miss', 2),
-  ('Concursante Miss 3', 'miss', 3),
-  ('Concursante Mister 1', 'mister', 1),
-  ('Concursante Mister 2', 'mister', 2),
-  ('Concursante Mister 3', 'mister', 3)
+-- Miss
+  ('ARACELY HERREA CANSAYA', 'miss', 1),
+  ('CAMILA VIVIANA GUTIERREZ ALI', 'miss', 2),
+  ('GISEL ARIANA YANIQUE SUXO', 'miss', 3),
+  ('LEYDI QUISPE ALTARIMANO', 'miss', 4),
+  ('FABIOLA KUNO LAURA', 'miss', 5),
+  ('KEYNER BRIANA CONDO SUXO', 'miss', 6),
+  ('MARY LUZ MAMANI MAMANI', 'miss', 7),
+  ('EVELIN WARA CONDORI MACHACA', 'miss', 8),
+  ('LINETH ALVELUZ HUANCA QUISPE', 'miss', 9),
+  ('MISHEL KAROLAIN MAMANI CALLE', 'miss', 10),
+  ('BRISSA CELESTE SORIA TAPIA', 'miss', 11),
+  ('PAOLA ANDREA RIOS PACO', 'miss', 12),
+  ('PAMELA APAZA CALLIZAYA', 'miss', 13),
+  ('YURI POMA CORI', 'miss', 14),
+  ('NIKAELA NAZARET QUISPE MAMANI', 'miss', 15),
+  ('DIRLY JHOANA SUXO AGUILAR', 'miss', 16),
+  ('MARICEL ESTER YUPANQUI CERDA', 'miss', 17),
+  ('ELIZABETH DEYSI ALAVI OSCORI', 'miss', 18),
+  ('VIVIAN JHOSELIN MENCIAS COPA', 'miss', 19),
+  ('SHIOMARA AGOR CASAS VILLCA', 'miss', 20),
+  -- Mister
+  ('PABLO FERNANDO SUXO TOLA', 'mister', 1),
+  ('ZAIRO MAMANI TICONA', 'mister', 2),
+  ('JHON ERICK CHINO MARQUEZ', 'mister', 3),
+  ('RIZ ALARCON IBAÑEZ', 'mister', 4),
+  ('RODRIGO CARLOS BELTRAN CHAMBILLA', 'mister', 5),
+  ('ENRIQUE GIOVANI SOTO HUAYCHO', 'mister', 6),
+  ('AMERICO SOLARI CONDORI', 'mister', 7),
+  ('GERALD LEBY DE LA CRUZ MAMANI', 'mister', 8),
+  ('CRISTHIAN ZENON ESCOBAR QUISPE', 'mister', 9),
+  ('BRAYAN MAMANI ROJAS', 'mister', 10),
+  ('MARCOS QUISPE CONDORI', 'mister', 11),
+  ('ARIEL JIMMY ARRATIA ALEJO', 'mister', 12),
+  ('FERNANDO ESCOBAR QUENTA', 'mister', 13),
+  ('MARCELO JHON MAMANI VARGAS', 'mister', 14),
+  ('LIMBER MAMANI POMA', 'mister', 15),
+  ('SANDER LUNA APAZA', 'mister', 16),
+  ('JUAN MARCELO CHARCA LIMACHI', 'mister', 17),
+  ('JHOEL ALBERT PAUCARA Z', 'mister', 18),
+  ('KEVIN ALDO MAMANI TELLEZ', 'mister', 19),
+  ('EYDAN NUÑEZ ACHO', 'mister', 20),
+  ('JHON WILLIAM LOZA MAMANI', 'mister', 21),
+  -- Nusta
+  ('LUZ PILAR BERNABE QUISPE', 'nusta', 1),
+  ('YODALIN KATIA MAMANI QUISPE', 'nusta', 2),
+  ('YOSELYN QUISPE QUISPE', 'nusta', 3),
+  ('ABIGAIL ZOE MENDOZA PATTY', 'nusta', 4),
+  ('INGRID CHAVEZ ROJAS', 'nusta', 5),
+  ('MILAGROS LIBERTAD VIRGINIA BUSTAMANTE', 'nusta', 6),
+  ('ALEXANDRA MIKAELA HUARANCA SAN MILLAN', 'nusta', 7),
+  ('LEINA IRIS TANCARA GARCIA', 'nusta', 8),
+  ('HEIDY CHOQUETOPA CHEKA', 'nusta', 9),
+  ('JESICA HUANCA CONDORI', 'nusta', 10),
+  ('JAZMIN MAMANI HUMEREZ', 'nusta', 11),
+  ('PAOLA ALEJANDRA CHOQUE PARDO', 'nusta', 12),
+  ('MAYA NILDA MOLLO CRUZ', 'nusta', 13),
+  ('ROSA QUISPE NINA', 'nusta', 14),
+  ('LORENA TRILLO SANCHEZ', 'nusta', 15),
+  ('MAGDALENA QUISPE ALLCA', 'nusta', 16),
+  ('ESTEFANI RODRIGUEZ QUISPE', 'nusta', 17),
+  ('AVRIL VARGAS CONDORI', 'nusta', 18),
+  ('ARLYMES NORIE PARI TICONA', 'nusta', 19),
+  ('MARIEL PAOLA ESCOBAR CAPCHA', 'nusta', 20),
+  ('MARIA ELENA MAMANI CARITA', 'nusta', 21),
+  -- Cholita
+  ('HONELY YOMAIRA QUENTA', 'cholita', 1),
+  ('YULY EVELIN VENTURA ALANOCA', 'cholita', 2),
+  ('CARMEN JESICA SULLCA LOPEZ', 'cholita', 3),
+  ('ALBANY MAGDIEL MENDOZA TERRAZAS', 'cholita', 4),
+  ('JHINATA MAYUMI CUTILE ALVAREZ', 'cholita', 5),
+  ('MARIA LIZ QUISPE CONDORI', 'cholita', 6),
+  ('SOLEDAD CHUI TICONA', 'cholita', 7),
+  ('MAGALY NILDY PAZ MAMANI', 'cholita', 8),
+  ('ROSMELIA SARZURI VINO', 'cholita', 9),
+  ('NOELIA PAMELA CHIRI TOZOLA', 'cholita', 10),
+  ('JHUSCETT BIANCA LOPEZ HUARICOLLO', 'cholita', 11),
+  ('MAYUMI MARTHA CHURA HILARI', 'cholita', 12),
+  ('CAMILA VARGAS APAZA', 'cholita', 13),
+  ('MADELEN AYLIN GUTIERREZ CALLISAYA', 'cholita', 14),
+  ('ABIGAIL WENDY HUARAHUARA ALI', 'cholita', 15),
+  ('ADRIANA BELEN QUISPE HILARI', 'cholita', 16),
+  ('MELANY HILARI MAMANI', 'cholita', 17),
+  ('MARITZA CONDORI URUCHI', 'cholita', 18),
+  ('VANIA PAOLA YANA QUISBERT', 'cholita', 19),
+  ('NILDA OLIVIA HUAYGUA APAZA', 'cholita', 20),
+  ('SANDY MARILYN ALANOCA MAMANI', 'cholita', 21),
+  ('DANIELA ARACELY POBLETE VELAZQUES', 'cholita', 22),
+  -- Chasqui
+  ('DANIEL APAZA TUMIRI', 'chasqui', 1),
+  ('VIDAL JUAN HUARACHI VILLCA', 'chasqui', 2),
+  ('AMILCAR JOEL CALLISAYA MAMANI', 'chasqui', 3),
+  ('XAVIER CARLOS TUYUKI AVERANGA PARISACA', 'chasqui', 4),
+  ('DENILSON KEVIN CONDORI ARIAS', 'chasqui', 5),
+  ('ARMIN VLADIMIR VARGAS CONDORI', 'chasqui', 6),
+  ('ALEJANDRO FELIPE MAMANI BUTRON', 'chasqui', 7),
+  ('JUAN JOSE CONDORI SALAZAR', 'chasqui', 8),
+  ('ADEMAR CALLISAYA RAMOS', 'chasqui', 9),
+  ('MIGUEL ANGEL POMA HUANCA', 'chasqui', 10),
+  ('ROBERTO CARLOS CONDORI VILLCA', 'chasqui', 11),
+  ('MIGUEL ANGEL MAYTA MARTINEZ', 'chasqui', 12),
+  ('JHON MARCOS BLANCO MAMANI', 'chasqui', 13),
+  ('LEONEL GIOVANI NUÑEZ VILLCA', 'chasqui', 14),
+  ('RUBEN DAYNOR PACHECO CASTRO', 'chasqui', 15),
+  ('HENRRY RONALD LEYVA HUAYCHO', 'chasqui', 16),
+  ('JUAN LIZANDRO YUJRA SOLORZANO', 'chasqui', 17),
+  ('JHON MICHAEL ALANOCA SULLCATA', 'chasqui', 18),
+  ('CARLOS MARCA BAUTISTA', 'chasqui', 19),
+  ('EDWIN CHACON MOLLOSTOCA', 'chasqui', 20),
+  ('ARVIN JOSUE CHIPANA LEON', 'chasqui', 21),
+  ('CHISTIAN CHOQUE CHOQUE', 'chasqui', 22),
+  ('AMERICO SALARIO CONDORI ', 23)
 on conflict do nothing;
 
 -- ------------------------------------------------------------
@@ -191,4 +310,8 @@ to authenticated;
 
 grant select, insert, update
 on table public.votos
+to authenticated;
+
+grant select
+on table public.resultados
 to authenticated;
